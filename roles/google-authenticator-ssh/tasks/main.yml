@@ -1,0 +1,20 @@
+---
+- name: install packages
+  apt:
+    name:
+      - libpam-google-authenticator
+    update_cache: yes
+
+- name: modify pam config
+  lineinfile:
+    path: /etc/pam.d/sshd
+    insertafter: '^@include common-password$'
+    line: 'auth required pam_google_authenticator.so nullok'
+  notify: restart sshd
+
+- name: modify sshd_config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^KbdInteractiveAuthentication\s'
+    line: 'KbdInteractiveAuthentication yes'
+  notify: restart sshd
