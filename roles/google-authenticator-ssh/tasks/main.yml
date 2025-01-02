@@ -18,3 +18,11 @@
     regexp: '^KbdInteractiveAuthentication\s'
     line: 'KbdInteractiveAuthentication yes'
   notify: restart sshd
+
+- name: add sshd_config file
+  copy:
+    src: "{{ item }}"
+    dest: /etc/ssh/sshd_config.d/
+  with_fileglob:
+    - etc/ssh/sshd_config.d/*.conf
+  notify: restart sshd
